@@ -1,0 +1,44 @@
+services:
+    app:
+        container_name: farmasilink
+        image: webdevops/php-nginx:8.4
+        restart: unless-stopped
+        environment:
+            - PHP_DATE_TIMEZONE=Asia/Jakarta
+            - PHP_MEMORY_LIMIT=2048M
+            - WEB_DOCUMENT_ROOT=${PWD}/public
+            - PHP_DISMOD=ioncube,vips,sqlite,sqlite3,soap,pgsql,pdo_sqlite,pdo_pgsql,mongodb,ldap
+        working_dir: ${PWD}
+        volumes:
+            - ./:${PWD}
+        depends_on:
+            - database
+        ports:
+            - "7767:443"
+
+    database:
+        container_name: farmasilink-db
+        hostname: farmasilink-db
+        image: mysql:8.4
+        restart: unless-stopped
+        tty: true
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            TZ: Asia/Jakarta
+        volumes:
+            - mysql:/var/lib/mysql
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+
+    adminer:
+        container_name: farmasilink-adminer
+        image: adminer:latest
+        restart: unless-stopped
+        ports:
+            - "7768:8080"
+        depends_on:
+            - database
+
+volumes:
+    mysql:
