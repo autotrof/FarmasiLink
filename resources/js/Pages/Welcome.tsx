@@ -1,0 +1,19 @@
+import React from 'react';
+
+export default function Welcome(): React.ReactElement {
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-indigo-900 flex items-center justify-center">
+            <div className="text-center">
+                <h1 className="text-5xl font-bold text-white mb-4">
+                    Inertia + React + TypeScript
+                </h1>
+                <p className="text-xl text-indigo-100 mb-8">
+                    Client-Side Rendering SPA 🚀
+                </p>
+                <p className="text-indigo-200">
+                    YEYEYE LALALA
+                </p>
+            </div>
+        </div>
+    );
+}
