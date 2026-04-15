@@ -19,8 +19,19 @@
         "vite": "^8.0.0"
     },
     "dependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.1",
+        "@fontsource/roboto": "^5.2.10",
         "@inertiajs/react": "^3.0.3",
-        "react": "^19.2.5",
-        "react-dom": "^19.2.5"
+        "@mui/icons-material": "^9.0.0",
+        "@mui/material": "^9.0.0",
+        "@mui/styled-engine-sc": "^9.0.0",
+        "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
+        "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0",
+        "styled-components": "^6.4.0"
+    },
+    "peerDependencies": {
+        "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
+        "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
     }
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '@mui/material/Button';
 
 export default function Welcome(): React.ReactElement {
     return (
@@ -12,6 +13,9 @@ export default function Welcome(): React.ReactElement {
                 </p>
                 <p className="text-indigo-200">
                     YEYEYE LALALA
+                    <Button variant="contained" color="primary">
+                        Hello World
+                    </Button>
                 </p>
             </div>
         </div>
