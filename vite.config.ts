@@ -1,3 +1,4 @@
+import inertia from '@inertiajs/vite'
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
@@ -7,9 +8,10 @@ export default defineConfig({
     plugins: [
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],
-            refresh: true,
+            refresh: ['routes/web.php', 'resources/views/app.blade.php'],
         }),
         react(),
+        inertia(),
         tailwindcss(),
     ],
     server: {

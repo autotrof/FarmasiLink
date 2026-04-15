@@ -1,0 +1,733 @@
+
+# @name login
+POST https://recruitment.rsdeltasurya.com/api/v1/auth
+Content-Type: application/json
+
+{
+    "email": "upload.kurniawan@gmail.com",
+    "password": "085812168079"
+}
+
+###
+
+@token = {{login.response.body.$.access_token}}
+
+###
+### contoh response:
+# {
+#   "token_type": "Bearer",
+#   "expires_in": 86400,
+#   "access_token": "019d9291-e486-7214-907b-9a4746d4f1a5|M0aNcZKGVibfWDSYI4eV3Wummy4MR6ijzrMHN5W9500ffd01"
+# }
+
+GET http://recruitment.rsdeltasurya.com/api/v1/medicines
+Authorization: Bearer {{token}}
+
+###
+### contoh response:
+# {
+#   "medicines": [
+#     {
+#       "id": "9cf72984-047a-4c48-bc12-de0c6437b5ae",
+#       "name": "Cholecalciferol 1000 IU Tablet Kunyah (PROVE D3-1000)"
+#     },
+#     {
+#       "id": "9cf72984-075b-464a-86ac-bd6d727763e3",
+#       "name": "Desloratadine 5mg Tablet Salut Selaput (DEXA MEDICA)"
+#     },
+#     {
+#       "id": "9cf72984-05b8-40d7-9cee-b326578d67f7",
+#       "name": "Diazepam 5mg Tablet (VALISANBE)"
+#     },
+#     {
+#       "id": "9cf72984-0689-497b-adb6-96a7d50931db",
+#       "name": "Divalproex Sodium 250mg Tablet Pelepasan Lambat (DEXA MEDICA)"
+#     },
+#     {
+#       "id": "9cf72984-01ed-46fa-8efc-04ce10eae2ed",
+#       "name": "Esomeprazole Sodium 20mg Tablet (ESOFERR)"
+#     },
+#     {
+#       "id": "9cf72984-04e0-4d4b-852c-8602ce4cb30b",
+#       "name": "Lorazepam 2mg Tablet Salut Selaput (MERLOPAM 2)"
+#     },
+#     {
+#       "id": "9cf72984-033d-4af8-95cb-2b4912602c8a",
+#       "name": "Mecobalamin 500 mg Tablet (LAPIBAL)"
+#     },
+#     {
+#       "id": "9cf72984-0411-4b11-969c-e13a4b116bec",
+#       "name": "Mefenamic Acid 500mg Tablet Salut Selaput (MEFINAL 500)"
+#     },
+#     {
+#       "id": "9cf72984-054d-4925-b12e-2aaf8d613401",
+#       "name": "Metamizole Sodium 500mg Tablet (NOVALGIN)"
+#     },
+#     {
+#       "id": "9cf72984-0622-4a2b-81e8-1b92fbbdeb64",
+#       "name": "Methylprednisolone 8mg Tablet (SANEXON 8)"
+#     },
+#     {
+#       "id": "9cf72984-0015-45a4-a2b4-dcf83e8fe144",
+#       "name": "Paracetamol 500mg Tablet (SANMOL)"
+#     },
+#     {
+#       "id": "9cf72984-02d4-4270-b659-708bae3c5ca1",
+#       "name": "Propranolol Hydrochloride 10mg Tablet (KIMIA FARMA)"
+#     },
+#     {
+#       "id": "9cf72984-0265-4a83-9eba-278eae10ca92",
+#       "name": "Ranitidine Hydrochloride 150mg Tablet Salut Selaput (HEXPHARM)"
+#     },
+#     {
+#       "id": "9cf72984-06f4-40e2-b434-efea9ee0d622",
+#       "name": "Tranexamic Acid 500mg Tablet Salut Selaput (BERNOFARM)"
+#     },
+#     {
+#       "id": "9cf72984-03a8-43ad-9a57-41b8c6f2ba27",
+#       "name": "Vitamin E 30 IU\/ Vitamin C 750mg\/ Vitamin B1 15mg (BECOM - ZET)"
+#     }
+#   ]
+# }
+
+GET http://recruitment.rsdeltasurya.com/api/v1/medicines/9cf72984-047a-4c48-bc12-de0c6437b5ae/prices
+Authorization: Bearer {{token}}
+
+
+###
+
+### contoh response:
+# {
+#   "prices": [
+#     {
+#       "id": "9cf72984-1ba7-4c6c-bd4a-332f7404035b",
+#       "unit_price": 4574,
+#       "start_date": {
+#         "value": "2024-09-09",
+#         "formatted": "9 September 2024"
+#       },
+#       "end_date": {
+#         "value": "2024-09-13",
+#         "formatted": "13 September 2024"
+#       }
+#     },
+#     {
+#       "id": "9cf72984-1bf4-46e4-a979-266d70a32144",
+#       "unit_price": 4914,
+#       "start_date": {
+#         "value": "2024-09-14",
+#         "formatted": "14 September 2024"
+#       },
+#       "end_date": {
+#         "value": "2024-09-19",
+#         "formatted": "19 September 2024"
+#       }
+#     },
+#     {
+#       "id": "9cf72984-1c41-4628-8964-71a4982febc5",
+#       "unit_price": 5254,
+#       "start_date": {
+#         "value": "2024-09-20",
+#         "formatted": "20 September 2024"
+#       },
+#       "end_date": {
+#         "value": "2024-09-23",
+#         "formatted": "23 September 2024"
+#       }
+#     },
+#     {
+#       "id": "9cf72984-1c8f-4794-aedf-c178e2201d94",
+#       "unit_price": 4901,
+#       "start_date": {
+#         "value": "2024-09-24",
+#         "formatted": "24 September 2024"
+#       },
+#       "end_date": {
+#         "value": "2024-09-27",
+#         "formatted": "27 September 2024"
+#       }
+#     },
+#     {
+#       "id": "9cf72984-1cdf-4a80-a165-f7c7ee56852f",
+#       "unit_price": 5284,
+#       "start_date": {
+#         "value": "2024-09-28",
+#         "formatted": "28 September 2024"
+#       },
+#       "end_date": {
+#         "value": "2024-10-01",
+#         "formatted": "1 Oktober 2024"
+#       }
+#     },
+#     {
+#       "id": "9cf72984-1d2c-4834-9d97-1ad65c4868ad",
+#       "unit_price": 5641,
+#       "start_date": {
+#         "value": "2024-10-02",
+#         "formatted": "2 Oktober 2024"
+#       },
+#       "end_date": {
+#         "value": "2024-10-06",
+#         "formatted": "6 Oktober 2024"
+#       }
+#     },
+#     {
+#       "id": "9cf72984-1d7c-4f3b-8320-006afaec9fd2",
+#       "unit_price": 5091,
+#       "start_date": {
+#         "value": "2024-10-07",
+#         "formatted": "7 Oktober 2024"
+#       },
+#       "end_date": {
+#         "value": "2024-10-10",
+#         "formatted": "10 Oktober 2024"
+#       }
+#     },
+#     {
+#       "id": "9cf72984-1dca-4d2d-ba66-0fefbe809894",
+#       "unit_price": 5388,
+#       "start_date": {
+#         "value": "2024-10-11",
+#         "formatted": "11 Oktober 2024"
+#       },
+#       "end_date": {
+#         "value": "2024-10-14",
+#         "formatted": "14 Oktober 2024"
+#       }
+#     },
+#     {
+#       "id": "9cf72984-1e13-4d68-91b9-0566283fe289",
+#       "unit_price": 5829,
+#       "start_date": {
+#         "value": "2024-10-15",
+#         "formatted": "15 Oktober 2024"
+#       },
+#       "end_date": null
+#     },
+#     {
+#       "id": "9de66f61-ea9c-4f9a-9de7-a6cac65d826b",
+#       "unit_price": 4693,
+#       "start_date": {
+#         "value": "2024-12-25",
+#         "formatted": "25 Desember 2024"
+#       },
+#       "end_date": {
+#         "value": "2024-12-29",
+#         "formatted": "29 Desember 2024"
+#       }
+#     },
+#     {
+#       "id": "9de66f61-eae5-4eed-b3bc-db5cb34a183b",
+#       "unit_price": 4985,
+#       "start_date": {
+#         "value": "2024-12-30",
+#         "formatted": "30 Desember 2024"
+#       },
+#       "end_date": {
+#         "value": "2025-01-04",
+#         "formatted": "4 Januari 2025"
+#       }
+#     },
+#     {
+#       "id": "9de66f61-eb2c-41ba-b79e-9f493ab13386",
+#       "unit_price": 5483,
+#       "start_date": {
+#         "value": "2025-01-05",
+#         "formatted": "5 Januari 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-01-10",
+#         "formatted": "10 Januari 2025"
+#       }
+#     },
+#     {
+#       "id": "9de66f61-eb75-4f0a-8721-bc10a9a2d073",
+#       "unit_price": 4978,
+#       "start_date": {
+#         "value": "2025-01-11",
+#         "formatted": "11 Januari 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-01-14",
+#         "formatted": "14 Januari 2025"
+#       }
+#     },
+#     {
+#       "id": "9de66f61-ebbd-46e0-b223-b08ab9ba5ebc",
+#       "unit_price": 5381,
+#       "start_date": {
+#         "value": "2025-01-15",
+#         "formatted": "15 Januari 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-01-18",
+#         "formatted": "18 Januari 2025"
+#       }
+#     },
+#     {
+#       "id": "9de66f61-ec04-411b-a2f3-65ec930aad0a",
+#       "unit_price": 5687,
+#       "start_date": {
+#         "value": "2025-01-19",
+#         "formatted": "19 Januari 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-01-22",
+#         "formatted": "22 Januari 2025"
+#       }
+#     },
+#     {
+#       "id": "9de66f61-ec4c-4e2c-b892-888adbd930dc",
+#       "unit_price": 5152,
+#       "start_date": {
+#         "value": "2025-01-23",
+#         "formatted": "23 Januari 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-01-26",
+#         "formatted": "26 Januari 2025"
+#       }
+#     },
+#     {
+#       "id": "9de66f61-ec94-44d3-8f6f-4438e90c8376",
+#       "unit_price": 5433,
+#       "start_date": {
+#         "value": "2025-01-27",
+#         "formatted": "27 Januari 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-01-30",
+#         "formatted": "30 Januari 2025"
+#       }
+#     },
+#     {
+#       "id": "9de66f61-ecd8-4c33-aa35-de38b94212da",
+#       "unit_price": 5722,
+#       "start_date": {
+#         "value": "2025-01-31",
+#         "formatted": "31 Januari 2025"
+#       },
+#       "end_date": null
+#     },
+#     {
+#       "id": "9e28a0e6-0748-4e55-9f2d-925fa03be453",
+#       "unit_price": 4564,
+#       "start_date": {
+#         "value": "2025-02-01",
+#         "formatted": "1 Februari 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-02-04",
+#         "formatted": "4 Februari 2025"
+#       }
+#     },
+#     {
+#       "id": "9e28a0e6-0792-4a1e-8aa3-d70f36da6774",
+#       "unit_price": 4864,
+#       "start_date": {
+#         "value": "2025-02-05",
+#         "formatted": "5 Februari 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-02-10",
+#         "formatted": "10 Februari 2025"
+#       }
+#     },
+#     {
+#       "id": "9e28a0e6-07da-4574-8a1c-f571c078fadf",
+#       "unit_price": 5298,
+#       "start_date": {
+#         "value": "2025-02-11",
+#         "formatted": "11 Februari 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-02-14",
+#         "formatted": "14 Februari 2025"
+#       }
+#     },
+#     {
+#       "id": "9e28a0e6-0824-45d3-9550-f6fd25bb4e60",
+#       "unit_price": 4949,
+#       "start_date": {
+#         "value": "2025-02-15",
+#         "formatted": "15 Februari 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-02-19",
+#         "formatted": "19 Februari 2025"
+#       }
+#     },
+#     {
+#       "id": "9e28a0e6-086e-42fe-8306-fa8367860bfe",
+#       "unit_price": 5315,
+#       "start_date": {
+#         "value": "2025-02-20",
+#         "formatted": "20 Februari 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-02-24",
+#         "formatted": "24 Februari 2025"
+#       }
+#     },
+#     {
+#       "id": "9e28a0e6-08b7-4368-84af-706a763bd380",
+#       "unit_price": 5607,
+#       "start_date": {
+#         "value": "2025-02-25",
+#         "formatted": "25 Februari 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-03-02",
+#         "formatted": "2 Maret 2025"
+#       }
+#     },
+#     {
+#       "id": "9e28a0e6-0908-409f-afe2-4210dadfbeb9",
+#       "unit_price": 5188,
+#       "start_date": {
+#         "value": "2025-03-03",
+#         "formatted": "3 Maret 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-03-06",
+#         "formatted": "6 Maret 2025"
+#       }
+#     },
+#     {
+#       "id": "9e28a0e6-0954-4ae2-97ac-a0400dfbbc1b",
+#       "unit_price": 5700,
+#       "start_date": {
+#         "value": "2025-03-07",
+#         "formatted": "7 Maret 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-03-11",
+#         "formatted": "11 Maret 2025"
+#       }
+#     },
+#     {
+#       "id": "9e28a0e6-0999-475d-972c-613827f6f47f",
+#       "unit_price": 6010,
+#       "start_date": {
+#         "value": "2025-03-12",
+#         "formatted": "12 Maret 2025"
+#       },
+#       "end_date": null
+#     },
+#     {
+#       "id": "9f7b2b01-afd4-4ab0-b29a-1d72d6adb352",
+#       "unit_price": 4616,
+#       "start_date": {
+#         "value": "2025-07-01",
+#         "formatted": "1 Juli 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-07-06",
+#         "formatted": "6 Juli 2025"
+#       }
+#     },
+#     {
+#       "id": "9f7b2b01-b02b-45f3-a709-1de5a8b94190",
+#       "unit_price": 5008,
+#       "start_date": {
+#         "value": "2025-07-07",
+#         "formatted": "7 Juli 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-07-10",
+#         "formatted": "10 Juli 2025"
+#       }
+#     },
+#     {
+#       "id": "9f7b2b01-b079-40de-8d4f-1cf634be2803",
+#       "unit_price": 5497,
+#       "start_date": {
+#         "value": "2025-07-11",
+#         "formatted": "11 Juli 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-07-16",
+#         "formatted": "16 Juli 2025"
+#       }
+#     },
+#     {
+#       "id": "9f7b2b01-b0cc-4016-8422-492f1c333054",
+#       "unit_price": 5209,
+#       "start_date": {
+#         "value": "2025-07-17",
+#         "formatted": "17 Juli 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-07-20",
+#         "formatted": "20 Juli 2025"
+#       }
+#     },
+#     {
+#       "id": "9f7b2b01-b122-412f-8b60-87a9f28208f1",
+#       "unit_price": 5641,
+#       "start_date": {
+#         "value": "2025-07-21",
+#         "formatted": "21 Juli 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-07-26",
+#         "formatted": "26 Juli 2025"
+#       }
+#     },
+#     {
+#       "id": "9f7b2b01-b16e-412a-bf2a-a5293c573d0e",
+#       "unit_price": 6033,
+#       "start_date": {
+#         "value": "2025-07-27",
+#         "formatted": "27 Juli 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-08-01",
+#         "formatted": "1 Agustus 2025"
+#       }
+#     },
+#     {
+#       "id": "9f7b2b01-b1df-4e1f-a460-6955723e3051",
+#       "unit_price": 5694,
+#       "start_date": {
+#         "value": "2025-08-02",
+#         "formatted": "2 Agustus 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-08-05",
+#         "formatted": "5 Agustus 2025"
+#       }
+#     },
+#     {
+#       "id": "9f7b2b01-b238-4712-bc9f-9a0c0f223ee7",
+#       "unit_price": 6168,
+#       "start_date": {
+#         "value": "2025-08-06",
+#         "formatted": "6 Agustus 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-08-11",
+#         "formatted": "11 Agustus 2025"
+#       }
+#     },
+#     {
+#       "id": "9f7b2b01-b28b-404a-9a7e-68ef5e0865cf",
+#       "unit_price": 6514,
+#       "start_date": {
+#         "value": "2025-08-12",
+#         "formatted": "12 Agustus 2025"
+#       },
+#       "end_date": null
+#     },
+#     {
+#       "id": "9fe75d7e-052d-43e8-9c47-0bc2026e2cfe",
+#       "unit_price": 4627,
+#       "start_date": {
+#         "value": "2025-09-01",
+#         "formatted": "1 September 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-09-06",
+#         "formatted": "6 September 2025"
+#       }
+#     },
+#     {
+#       "id": "9fe75d7e-057c-4bc5-99dc-db688f40d42a",
+#       "unit_price": 4936,
+#       "start_date": {
+#         "value": "2025-09-07",
+#         "formatted": "7 September 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-09-11",
+#         "formatted": "11 September 2025"
+#       }
+#     },
+#     {
+#       "id": "9fe75d7e-05d0-4c1c-b19f-7a31b46f5577",
+#       "unit_price": 5309,
+#       "start_date": {
+#         "value": "2025-09-12",
+#         "formatted": "12 September 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-09-16",
+#         "formatted": "16 September 2025"
+#       }
+#     },
+#     {
+#       "id": "9fe75d7e-0629-4867-a08b-1032c7fded3b",
+#       "unit_price": 4913,
+#       "start_date": {
+#         "value": "2025-09-17",
+#         "formatted": "17 September 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-09-21",
+#         "formatted": "21 September 2025"
+#       }
+#     },
+#     {
+#       "id": "9fe75d7e-067c-4b60-8134-40699491890f",
+#       "unit_price": 5305,
+#       "start_date": {
+#         "value": "2025-09-22",
+#         "formatted": "22 September 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-09-27",
+#         "formatted": "27 September 2025"
+#       }
+#     },
+#     {
+#       "id": "9fe75d7e-06d2-483b-8cbb-ef9d8b0dfd98",
+#       "unit_price": 5827,
+#       "start_date": {
+#         "value": "2025-09-28",
+#         "formatted": "28 September 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-10-03",
+#         "formatted": "3 Oktober 2025"
+#       }
+#     },
+#     {
+#       "id": "9fe75d7e-0727-456d-baab-b539cd8ced85",
+#       "unit_price": 5482,
+#       "start_date": {
+#         "value": "2025-10-04",
+#         "formatted": "4 Oktober 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-10-08",
+#         "formatted": "8 Oktober 2025"
+#       }
+#     },
+#     {
+#       "id": "9fe75d7e-0776-41ce-937f-2e9824f06711",
+#       "unit_price": 5865,
+#       "start_date": {
+#         "value": "2025-10-09",
+#         "formatted": "9 Oktober 2025"
+#       },
+#       "end_date": {
+#         "value": "2025-10-13",
+#         "formatted": "13 Oktober 2025"
+#       }
+#     },
+#     {
+#       "id": "9fe75d7e-07c6-44b5-97ce-3f4df2e497f3",
+#       "unit_price": 6236,
+#       "start_date": {
+#         "value": "2025-10-14",
+#         "formatted": "14 Oktober 2025"
+#       },
+#       "end_date": null
+#     },
+#     {
+#       "id": "a0cb48f7-d913-437b-97ca-a9cdf5f8a3be",
+#       "unit_price": 4538,
+#       "start_date": {
+#         "value": "2026-01-01",
+#         "formatted": "1 Januari 2026"
+#       },
+#       "end_date": {
+#         "value": "2026-01-05",
+#         "formatted": "5 Januari 2026"
+#       }
+#     },
+#     {
+#       "id": "a0cb48f7-d95f-4b97-bdc9-cfca8ab09d68",
+#       "unit_price": 4908,
+#       "start_date": {
+#         "value": "2026-01-06",
+#         "formatted": "6 Januari 2026"
+#       },
+#       "end_date": {
+#         "value": "2026-01-10",
+#         "formatted": "10 Januari 2026"
+#       }
+#     },
+#     {
+#       "id": "a0cb48f7-d9ab-4a2b-9924-46ca63209283",
+#       "unit_price": 5161,
+#       "start_date": {
+#         "value": "2026-01-11",
+#         "formatted": "11 Januari 2026"
+#       },
+#       "end_date": {
+#         "value": "2026-01-15",
+#         "formatted": "15 Januari 2026"
+#       }
+#     },
+#     {
+#       "id": "a0cb48f7-d9f6-4375-902b-e8676c02c562",
+#       "unit_price": 4691,
+#       "start_date": {
+#         "value": "2026-01-16",
+#         "formatted": "16 Januari 2026"
+#       },
+#       "end_date": {
+#         "value": "2026-01-19",
+#         "formatted": "19 Januari 2026"
+#       }
+#     },
+#     {
+#       "id": "a0cb48f7-da46-41a0-815a-10de8a42fccf",
+#       "unit_price": 5145,
+#       "start_date": {
+#         "value": "2026-01-20",
+#         "formatted": "20 Januari 2026"
+#       },
+#       "end_date": {
+#         "value": "2026-01-25",
+#         "formatted": "25 Januari 2026"
+#       }
+#     },
+#     {
+#       "id": "a0cb48f7-da92-478c-95c6-4c5335455f83",
+#       "unit_price": 5630,
+#       "start_date": {
+#         "value": "2026-01-26",
+#         "formatted": "26 Januari 2026"
+#       },
+#       "end_date": {
+#         "value": "2026-01-29",
+#         "formatted": "29 Januari 2026"
+#       }
+#     },
+#     {
+#       "id": "a0cb48f7-dae6-4713-abe2-1205e0e8a729",
+#       "unit_price": 5220,
+#       "start_date": {
+#         "value": "2026-01-30",
+#         "formatted": "30 Januari 2026"
+#       },
+#       "end_date": {
+#         "value": "2026-02-04",
+#         "formatted": "4 Februari 2026"
+#       }
+#     },
+#     {
+#       "id": "a0cb48f7-db41-498e-b0e6-25343940554a",
+#       "unit_price": 5554,
+#       "start_date": {
+#         "value": "2026-02-05",
+#         "formatted": "5 Februari 2026"
+#       },
+#       "end_date": {
+#         "value": "2026-02-10",
+#         "formatted": "10 Februari 2026"
+#       }
+#     },
+#     {
+#       "id": "a0cb48f7-db8c-43b2-852e-6a5b921951ee",
+#       "unit_price": 5937,
+#       "start_date": {
+#         "value": "2026-02-11",
+#         "formatted": "11 Februari 2026"
+#       },
+#       "end_date": null
+#     }
+#   ]
+# }

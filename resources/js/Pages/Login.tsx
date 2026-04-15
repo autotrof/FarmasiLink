@@ -1,9 +1,10 @@
-import * as React from 'react';
-import {Box, Button, Card as MuiCard, FormLabel, FormControl, Link, TextField, Typography, Stack, Grid, Divider, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions} from '@mui/material';
+import { useEffect, useState, useActionState } from 'react';
+import {Box, Button, Card as MuiCard, FormLabel, FormControl, Link, TextField, Typography, Stack, Grid, Divider, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Alert} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
 import { z } from 'zod';
 import { AssignmentInd, LockTwoTone, VisibilityOffTwoTone, VisibilityTwoTone } from '@mui/icons-material';
+import { router } from "@inertiajs/react";
 
 const LoginFormSchema = z.object({
   username: z.string().min(3, 'Username harus diisi. minimal 3 karakter'),
@@ -20,6 +21,7 @@ type LoginData = {
         password: string;
     };
     message?: string;
+    success?: boolean;
 };
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -40,7 +42,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   }),
 }));
 
-async function doLogin(prevState: unknown, formData: FormData) : Promise<LoginData> {
+async function doLogin(_prevState: unknown, formData: FormData) : Promise<LoginData> {
     const username = formData.get('username') as string;
     const password = formData.get('password') as string;
 
@@ -74,10 +76,10 @@ async function doLogin(prevState: unknown, formData: FormData) : Promise<LoginDa
         });
 
         if (response.ok) {
-            window.location.href = '/dashboard';
             return {
                 fields: validatedFields.data,
                 message: 'Login berhasil',
+                success: true,
             };
         }
 
@@ -106,9 +108,22 @@ async function doLogin(prevState: unknown, formData: FormData) : Promise<LoginDa
 }
 
 export default function Login(props: { disableCustomTheme?: boolean }) {
-  const [loginData, formAction, isSending] = React.useActionState(doLogin, undefined);
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [openForgotPasswordDialog, setOpenForgotPasswordDialog] = React.useState(false);
+  const [loginData, formAction, isSending] = useActionState(doLogin, undefined);
+  const [showPassword, setShowPassword] = useState(false);
+  const [openForgotPasswordDialog, setOpenForgotPasswordDialog] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+
+  useEffect(() => {
+    if (loginData?.success) {
+      setShowSuccessAlert(true);
+      const timer = setTimeout(() => {
+        router.visit('/', {
+            replace: true,
+        })
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [loginData?.success, router]);
 
   return (
     <AppTheme {...props}>
@@ -141,13 +156,21 @@ export default function Login(props: { disableCustomTheme?: boolean }) {
                     })
                 ]}>
                     <Stack
-                        direction={{ xs: 'column-reverse', md: 'row' }}
                         sx={{
+                            position: 'relative',
                             justifyContent: 'center',
                             gap: { xs: 6, sm: 12 },
                             p: 2,
                             mx: 'auto',
+                            mt: showSuccessAlert ? 8 : 0,
                         }}>
+                        {showSuccessAlert && (
+                            <Box sx={{ position: 'absolute', top: -70, left: '50%', transform: 'translateX(-50%)', zIndex: 9999, minWidth: 300 }}>
+                                <Alert severity="success">
+                                    {loginData?.message || 'Login berhasil'}
+                                </Alert>
+                            </Box>
+                        )}
                         <Card variant="outlined">
                             <Grid container spacing={1}  >
                                 <Grid size={2}>

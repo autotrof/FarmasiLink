@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['guest']], function () {
@@ -9,7 +10,6 @@ Route::group(['middleware' => ['guest']], function () {
 });
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::any('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 });
-
-Route::redirect('/', '/dashboard');
