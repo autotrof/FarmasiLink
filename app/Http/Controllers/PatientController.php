@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Patient;
+use App\Services\LogService;
 use App\Services\PatientService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,7 +12,10 @@ use Inertia\Response;
 
 class PatientController extends Controller
 {
-    public function __construct(private PatientService $patientService) {}
+    public function __construct(
+        private PatientService $patientService,
+        private LogService $logService
+    ) {}
 
     /**
      * Display the patients page.
@@ -52,6 +56,12 @@ class PatientController extends Controller
         ]);
 
         $patient = $this->patientService->createPatient($data);
+        $this->logService->storeLog(
+            userId: (int) $request->user()->id,
+            action: 'create',
+            model: 'Patient',
+            description: "Membuat pasien: {$patient->name} ({$patient->id})"
+        );
 
         return response()->json($patient, 201);
     }
@@ -84,6 +94,12 @@ class PatientController extends Controller
         ]);
 
         $updated = $this->patientService->updatePatient($patient->id, $data);
+        $this->logService->storeLog(
+            userId: (int) $request->user()->id,
+            action: 'update',
+            model: 'Patient',
+            description: "Mengubah pasien: {$updated->name} ({$updated->id})"
+        );
 
         return response()->json($updated);
     }
@@ -92,9 +108,18 @@ class PatientController extends Controller
      * Delete the specified patient.
      * DELETE /patients/{patient}
      */
-    public function destroy(Patient $patient): JsonResponse
+    public function destroy(Request $request, Patient $patient): JsonResponse
     {
+        $deletedPatientId = $patient->id;
+        $deletedPatientName = $patient->name;
+
         $this->patientService->deletePatient($patient->id);
+        $this->logService->storeLog(
+            userId: (int) $request->user()->id,
+            action: 'delete',
+            model: 'Patient',
+            description: "Menghapus pasien: {$deletedPatientName} ({$deletedPatientId})"
+        );
 
         return response()->json(null, 204);
     }

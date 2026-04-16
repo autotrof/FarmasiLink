@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Services\LogService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,8 @@ use Inertia\Response as InertiaResponse;
 
 class AuthController extends Controller
 {
+    public function __construct(private LogService $logService) {}
+
     /**
      * Show login page.
      */
@@ -30,8 +33,17 @@ class AuthController extends Controller
 
         if (Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password']])) {
             $request->session()->regenerate();
+            $user = $request->user();
 
-            return response()->json(Auth::user());
+            $this->logService->storeLog(
+                userId: (int) $user->id,
+                action: 'login',
+                model: 'User',
+                modelId: (string) $user->id,
+                description: "User login: {$user->username}"
+            );
+
+            return response()->json($user);
         }
 
         throw ValidationException::withMessages([
@@ -44,6 +56,18 @@ class AuthController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
+        $user = $request->user();
+
+        if ($user) {
+            $this->logService->storeLog(
+                userId: (int) $user->id,
+                action: 'logout',
+                model: 'User',
+                modelId: (string) $user->id,
+                description: "User logout: {$user->username}"
+            );
+        }
+
         Auth::logout();
 
         $request->session()->invalidate();

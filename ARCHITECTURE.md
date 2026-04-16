@@ -136,8 +136,9 @@ public function getPatientById(string $patientId): Patient {
 
 | Method | Service Method | Roles | Description |
 |--------|---|---|---|
-| **Custom:** `myLogs()` | `getMyLogs()` | semua | Lihat log aktivitas sendiri |
-| **Custom:** `allLogs()` | `getAllLogs()` | admin | Lihat log semua user |
+| **Custom:** `myLogs()` | - | semua | Render halaman log aktivitas |
+| **Custom:** `list()` | `getMyLogs()` / `getAllLogs()` | semua | Ambil data log (admin: semua user, non-admin: milik sendiri) |
+| **Custom:** `allLogs()` | - | admin | Alias halaman log untuk admin |
 
 ---
 

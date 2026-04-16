@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Prescription;
+use App\Services\LogService;
 use App\Services\PrescriptionService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
@@ -12,7 +13,10 @@ use Inertia\Response;
 
 class PrescriptionController extends Controller
 {
-    public function __construct(private PrescriptionService $prescriptionService) {}
+    public function __construct(
+        private PrescriptionService $prescriptionService,
+        private LogService $logService
+    ) {}
 
     /**
      * Display a listing of prescriptions.
@@ -64,6 +68,12 @@ class PrescriptionController extends Controller
             'items.*.instruction' => 'nullable|string|max:500',
         ]);
         $prescription = $this->prescriptionService->createPrescription($data);
+        $this->logService->storeLog(
+            userId: (int) $request->user()->id,
+            action: 'create',
+            model: 'Prescription',
+            description: "Membuat resep: {$prescription->id}"
+        );
 
         return response()->json($prescription, 201);
     }
@@ -94,6 +104,12 @@ class PrescriptionController extends Controller
             'items.*.instruction' => 'nullable|string|max:500',
         ]);
         $updated = $this->prescriptionService->updatePrescription($prescription->id, $data);
+        $this->logService->storeLog(
+            userId: (int) $request->user()->id,
+            action: 'update',
+            model: 'Prescription',
+            description: "Mengubah resep: {$updated->id}"
+        );
 
         return response()->json($updated);
     }
@@ -105,6 +121,12 @@ class PrescriptionController extends Controller
     public function approve(Request $request, Prescription $prescription): JsonResponse
     {
         $this->prescriptionService->servePrescription($prescription->id, ['served_by' => $request->user()->id]);
+        $this->logService->storeLog(
+            userId: (int) $request->user()->id,
+            action: 'approve',
+            model: 'Prescription',
+            description: "Menerima resep: {$prescription->id}"
+        );
 
         return response()->json(['message' => 'Prescription approved successfully']);
     }

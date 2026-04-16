@@ -94,6 +94,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     // ===== Log Routes =====
     Route::get('/my-logs', [LogController::class, 'myLogs'])->name('logs.myLogs');
+    Route::get('/my-logs/list', [LogController::class, 'list'])->name('logs.list');
     Route::middleware(['role:admin'])->group(function () {
         Route::get('/all-logs', [LogController::class, 'allLogs'])->name('logs.allLogs');
     });

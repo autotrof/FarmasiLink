@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Examination;
 use App\Services\ExaminationService;
+use App\Services\LogService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,7 +12,10 @@ use Inertia\Response;
 
 class ExaminationController extends Controller
 {
-    public function __construct(private ExaminationService $examinationService) {}
+    public function __construct(
+        private ExaminationService $examinationService,
+        private LogService $logService
+    ) {}
 
     /**
      * Display the examinations page.
@@ -77,6 +81,13 @@ class ExaminationController extends Controller
             $this->examinationService->uploadDocument($examination->id, $document);
         }
 
+        $this->logService->storeLog(
+            userId: (int) $request->user()->id,
+            action: 'create',
+            model: 'Examination',
+            description: "Membuat pemeriksaan: {$examination->id}"
+        );
+
         return response()->json($examination, 201);
     }
 
@@ -120,6 +131,13 @@ class ExaminationController extends Controller
             $this->examinationService->uploadDocument($examination->id, $document);
         }
 
+        $this->logService->storeLog(
+            userId: (int) $request->user()->id,
+            action: 'update',
+            model: 'Examination',
+            description: "Mengubah pemeriksaan: {$examination->id}"
+        );
+
         return response()->json($examination);
     }
 
@@ -127,9 +145,17 @@ class ExaminationController extends Controller
      * Delete the specified examination.
      * DELETE /examinations/{examination}
      */
-    public function destroy(Examination $examination): JsonResponse
+    public function destroy(Request $request, Examination $examination): JsonResponse
     {
+        $deletedExaminationId = $examination->id;
+
         $this->examinationService->deleteExamination($examination->id);
+        $this->logService->storeLog(
+            userId: (int) $request->user()->id,
+            action: 'delete',
+            model: 'Examination',
+            description: "Menghapus pemeriksaan: {$deletedExaminationId}"
+        );
 
         return response()->json(null, 204);
     }
