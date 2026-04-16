@@ -5,10 +5,11 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import SelectContent from './SelectContent';
+// import SelectContent from './SelectContent';
 import MenuContent from './MenuContent';
 import OptionsMenu from './OptionsMenu';
 import { usePage } from '@inertiajs/react';
+import { Grid } from '@mui/material';
 const drawerWidth = 240;
 
 const Drawer = styled(MuiDrawer)({
@@ -42,7 +43,20 @@ export default function SideMenu() {
           p: 1.5,
         }}
       >
-        <SelectContent />
+        {/* <SelectContent /> */}
+        <Grid container spacing={1}>
+            <Grid size={2}>
+                <img src="/logo-rs.png" alt="Logo RS" />
+            </Grid>
+            <Grid size={10}>
+                <Typography variant="h6" color="text.secondary">
+                    Peresepan Obat
+                </Typography>
+                <Typography color="text.secondary">
+                    RS Arafah Anwar Medika
+                </Typography>
+            </Grid>
+        </Grid>
       </Box>
       <Divider />
       <Box

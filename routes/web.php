@@ -55,6 +55,7 @@ Route::group(['middleware' => ['auth']], function () {
     // ===== Medicine Routes =====
     Route::middleware(['role:dokter,apoteker,admin'])->group(function () {
         Route::get('/medicines', [MedicineController::class, 'index'])->name('medicines.index');
+        Route::get('/medicines/list', [MedicineController::class, 'list'])->name('medicines.list');
         Route::get('/medicines/{medicine}', [MedicineController::class, 'show'])->name('medicines.show');
     });
     Route::middleware(['role:admin'])->group(function () {
@@ -83,7 +84,7 @@ Route::group(['middleware' => ['auth']], function () {
     });
 
     // ===== Profile Routes (All Authenticated) =====
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
 
     // ===== Log Routes =====

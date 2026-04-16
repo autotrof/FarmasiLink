@@ -9,6 +9,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon, { listItemIconClasses } from '@mui/material/ListItemIcon';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
+import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import AlertDialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -16,6 +17,7 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import MenuButton from './MenuButton';
 import { router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 
 const MenuItem = styled(MuiMenuItem)({
   margin: '2px 0',
@@ -88,7 +90,12 @@ export default function OptionsMenu() {
           },
         }}
       >
-        <MenuItem onClick={handleClose}>Pengaturan</MenuItem>
+        <MenuItem component={Link} href="/profile">
+          <ListItemIcon>
+            <SettingsRoundedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Pengaturan</ListItemText>
+        </MenuItem>
         <Divider />
         <MenuItem
           onClick={handleLogoutClick}

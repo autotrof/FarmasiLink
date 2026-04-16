@@ -6,13 +6,14 @@ use App\Models\Medicine;
 use App\Models\Price;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class MedicineService
 {
     private string $baseUrl = 'https://recruitment.rsdeltasurya.com/api/v1';
+
     private string $email;
+
     private string $password;
 
     public function __construct()
@@ -117,32 +118,40 @@ class MedicineService
     /**
      * Get medicines with their current prices.
      * Current price is determined by the most recent price record where end_date is null or in the future.
+     *
      * @return LengthAwarePaginator<Medicine>
      */
     public function getMedicinesWithCurrentPrices(int $perPage = 15, int $page = 1, array $filters = []): LengthAwarePaginator
     {
-        $currentPrices = Price::select([
-            'medicine_id',
-            'unit_price'
-        ])
-        ->where(function (Builder $query) {
-            $query->whereNull('end_date')
-            ->orWhere(function (Builder $query) {
-                $query->where('start_date', '<=', date('Y-m-d'))
-                      ->where('end_date', '>=', date('Y-m-d'));
-            });
+        // Get the latest start_date for each medicine that meets the criteria
+        $latestPrices = Price::selectRaw('MAX(start_date) as max_start_date, medicine_id')
+            ->where(function (Builder $query) {
+                $query->whereNull('end_date')
+                    ->orWhere(function (Builder $query) {
+                        $query->where('start_date', '<=', date('Y-m-d'))
+                            ->where('end_date', '>=', date('Y-m-d'));
+                    });
+            })
+            ->groupBy('medicine_id');
+
+        // Join with the latest prices to get the unit_price
+        $currentPrices = Price::joinSub($latestPrices, 'latest', function ($join) {
+            $join->on('prices.medicine_id', '=', 'latest.medicine_id')
+                ->on('prices.start_date', '=', 'latest.max_start_date');
         })
-        ->groupBy('medicine_id');
+            ->select('prices.medicine_id', 'prices.unit_price');
 
         $medicines = Medicine::leftJoinSub($currentPrices, 'current_prices', function ($join) {
             $join->on('medicines.id', '=', 'current_prices.medicine_id');
         })
-        ->select('medicines.*', 'current_prices.unit_price');
+            ->select('medicines.*', 'current_prices.unit_price');
+
         if (isset($filters['search'])) {
-            $medicines->where('medicines.name', 'like', '%' . $filters['search'] . '%');
+            $medicines->where('medicines.name', 'like', '%'.$filters['search'].'%');
         }
+
         $medicines = $medicines->orderBy('medicines.name')
-        ->paginate($perPage, ['*'], 'page', $page);
+            ->paginate($perPage, ['*'], 'page', $page);
 
         return $medicines;
     }
@@ -152,5 +161,16 @@ class MedicineService
         return Medicine::with(['prices' => function ($query) {
             $query->orderBy('start_date', 'desc');
         }])->findOrFail($medicineId);
+    }
+
+    /**
+     * Get price history for a specific medicine
+     */
+    public function getPriceHistory(string $medicineId): array
+    {
+        $medicine = Medicine::findOrFail($medicineId);
+        $prices = $medicine->prices()->orderBy('start_date', 'desc')->get();
+
+        return ['data' => $prices];
     }
 }

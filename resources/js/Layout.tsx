@@ -3,7 +3,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import SideMenu from './components/SideMenu';
 import AppNavbar from './components/AppNavbar';
 import Header from './components/Header';
-import MainGrid from './components/MainGrid';
 import { Box, Stack } from '@mui/material';
 
 export default function Layout(props: {
