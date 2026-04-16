@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Examination;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Str;
 
 class ExaminationService
 {
@@ -15,6 +16,7 @@ class ExaminationService
         $query = Examination::with([
             'patient',
             'doctor',
+            'prescription',
         ]);
         if (isset($filters['patient_id'])) {
             $query->where('patient_id', $filters['patient_id']);
@@ -67,6 +69,8 @@ class ExaminationService
      */
     public function createExamination(array $data): Examination
     {
+        $data['id'] = Str::uuid()->toString();
+
         return Examination::create($data);
     }
 
@@ -94,12 +98,12 @@ class ExaminationService
     /**
      * Upload medical document for examination.
      */
-    public function uploadDocument(int $examinationId, $file): string
+    public function uploadDocument(string $examinationId, $file): string
     {
         $examination = Examination::findOrFail($examinationId);
-        $path = $file->store('examination_documents/'.$examinationId);
-        $examination->document_path = $path;
-        $examination->save();
+        $path = tap($file->store('examination_documents/'.$examinationId, 'public'), function ($path) use ($examination) {
+            $examination->update(['document_path' => $path]);
+        });
 
         return $path;
     }

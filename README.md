@@ -1,58 +1,127 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FarmasiLink
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+FarmasiLink adalah sistem informasi manajemen klinik dan apotek yang terintegrasi (Sistem Mananjemen Klinik/Klinik-Apotek). Sistem ini dirancang untuk memfasilitasi alur kerja mulai dari pendaftaran pasien, pemeriksaan oleh dokter, hingga penebusan resep di apotek.
 
-## About Laravel
+## 🌟 Fitur Utama (Berdasarkan Role)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Sistem ini menggunakan Role-Based Access Control (RBAC) dengan 4 role utama:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. **Admin**
+   - Manajemen penuh sistem
+   - Manajemen pengguna (User) & log aktivitas
+   - Akses penuh ke data Master (Pasien, Obat, Pemeriksaan, Resep)
+2. **Resepsionis**
+   - Pendaftaran pasien baru (Registrasi)
+   - Manajemen rekam medis pasien awal
+   - Upload dokumen rekam medis
+3. **Dokter**
+   - Melakukan pemeriksaan fisik & input vital sign
+   - Melihat rekam medis pasien
+   - Membuat/input resep untuk pasien
+4. **Apoteker**
+   - Mengelola daftar obat (termasuk sinkronisasi dari API)
+   - Menerima dan melayani (approve) resep dari dokter
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Panduan Deployment (Production)
 
-## Learning Laravel
+Proyek ini telah dikompilasi (build production) untuk environment frontend-nya, sehingga **Anda tidak perlu menginstall Node.js maupun menjalankan `npm run build`** di server production.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Berikut adalah panduan untuk mendepoy aplikasi menggunakan dua cara: Docker Compose dan cPanel/Shared Hosting.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Opsi 1: Menggunakan Docker Compose (Disarankan)
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Pastikan server Anda sudah terinstall Docker dan Docker Compose.
 
-## Agentic Development
+1. **Clone repositori**
+   ```bash
+   git clone <url-repo-anda>
+   cd FarmasiLink
+   ```
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+2. **Konfigurasi Environment**
+   Salin file `.env.example` menjadi `.env`.
+   ```bash
+   cp .env.example .env
+   ```
+   Atur kredensial database di dalam file `.env`:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=database
+   DB_PORT=3306
+   DB_DATABASE=farmasilink
+   DB_USERNAME=root
+   DB_PASSWORD=secret
+   ```
 
-```bash
-composer require laravel/boost --dev
+3. **Jalankan Docker Compose**
+   ```bash
+   docker-compose up -d
+   ```
+   *Catatan: Konfigurasi docker compose otomatis memetakan port `7767` untuk web app dan `7768` untuk adminer (database gui).*
 
-php artisan boost:install
-```
+4. **Install Dependensi Composer, Migrate, dan Seeding Database**
+   Masuk ke container aplikasi (contoh nama container: `farmasilink`):
+   ```bash
+   docker exec -it farmasilink bash
+   ```
+   Di dalam container, jalankan:
+   ```bash
+   composer install --optimize-autoloader --no-dev
+   php artisan key:generate
+   php artisan storage:link
+   php artisan migrate --seed
+   ```
+   *Perintah `migrate --seed` sangat penting untuk memasukkan data awal (termasuk akun administrator/role).*
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+5. **Akses Aplikasi**
+   Buka browser dan akses `https://<ip-server>:7767` atau `http://<ip-server>:7767`.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Opsi 2: Menggunakan cPanel (Shared Hosting)
 
-## Code of Conduct
+1. **Upload File**
+   - Zip seluruh file dari repositori (sudah termasuk folder `public/build` hasil production).
+   - Di File Manager cPanel, buat folder aplikasi (misal: `farmasilink-app`) **di luar** `public_html`.
+   - Ekstrak file zip tersebut ke dalam folder aplikasi `farmasilink-app`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. **Konfigurasi Folder Publik**
+   - Copy seluruh isi dari folder `public` aplikasi ke dalam folder `public_html` domain/subdomain Anda di cPanel.
+   - Edit file `index.php` yang ada di dalam `public_html`:
+     ```php
+     // Ubah path ini menyesuaikan lokasi folder app Anda
+     require __DIR__.'/../farmasilink-app/vendor/autoload.php';
+     $app = require_once __DIR__.'/../farmasilink-app/bootstrap/app.php';
+     ```
 
-## Security Vulnerabilities
+3. **Konfigurasi Environment dan Database**
+   - Buat database MySQL dan user MySQL di cPanel.
+   - Ubah nama `.env.example` menjadi `.env` di folder `farmasilink-app`.
+   - Sesuaikan konfigurasi database:
+     ```env
+     DB_CONNECTION=mysql
+     DB_HOST=127.0.0.1
+     DB_PORT=3306
+     DB_DATABASE=nama_db_cpanel
+     DB_USERNAME=user_db_cpanel
+     DB_PASSWORD=password_db_cpanel
+     ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+4. **Jalankan Instalasi (Terminal cPanel)**
+   - Buka menu **Terminal** di dashboard cPanel.
+   - Masuk ke direktori aplikasi:
+     ```bash
+     cd farmasilink-app
+     ```
+   - Jalankan perintah instalasi berikut:
+     ```bash
+     composer install --optimize-autoloader --no-dev
+     php artisan key:generate
+     php artisan storage:link
+     php artisan migrate --seed
+     ```
+   *Folder storage link mungkin perlu disesuaikan path-nya jika Anda menggunakan struktur public_html terpisah. Pastikan data seeder berhasil dibuat.*
 
-## License
+## 📚 Struktur Arsitektur
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Informasi lebih detail mengenai struktur spesifik *Service Pattern* aplikasi ini dapat dilihat di [ARCHITECTURE.md](ARCHITECTURE.md).

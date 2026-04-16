@@ -53,10 +53,10 @@ export default function SideMenu() {
         }}>
             <img src="/logo-rs.png" alt="Logo RS" style={{width: 40, height: 40}} />
             <Box>
-                <Typography variant="h6" color="text.secondary">
+                <Typography variant="h6" color="text.secondary" sx={{ fontSize: 13 }}>
                     Peresepan Obat
                 </Typography>
-                <Typography color="text.secondary">
+                <Typography color="text.secondary" sx={{fontSize: 13 }}>
                     RS Arafah Anwar Medika
                 </Typography>
             </Box>

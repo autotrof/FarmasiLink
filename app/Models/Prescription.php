@@ -37,6 +37,11 @@ class Prescription extends Model
         return $this->hasMany(PrescriptionItem::class);
     }
 
+    public function servedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'served_by');
+    }
+
     public function isServed(): bool
     {
         return $this->status === 'served';

@@ -4,6 +4,7 @@ import SideMenu from './components/SideMenu';
 import AppNavbar from './components/AppNavbar';
 import Header from './components/Header';
 import { Box, Stack } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 
 export default function Layout(props: {
     children: React.ReactNode;

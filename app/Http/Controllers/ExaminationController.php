@@ -50,7 +50,35 @@ class ExaminationController extends Controller
      * Store a newly created examination.
      * POST /examinations
      */
-    public function store(Request $request): JsonResponse {}
+    public function store(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'patient_id' => 'required|uuid|exists:patients,id',
+            'examination_date' => 'required|date',
+            'findings' => 'required|string',
+            'height' => 'nullable|numeric',
+            'weight' => 'nullable|numeric',
+            'systole' => 'nullable|numeric',
+            'diastole' => 'nullable|numeric',
+            'heart_rate' => 'nullable|numeric',
+            'respiration_rate' => 'nullable|numeric',
+            'temperature' => 'nullable|numeric',
+            'document' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ]);
+
+        $validated['doctor_id'] = auth()->id();
+
+        $document = $request->file('document');
+        unset($validated['document']);
+
+        $examination = $this->examinationService->createExamination($validated);
+
+        if ($document) {
+            $this->examinationService->uploadDocument($examination->id, $document);
+        }
+
+        return response()->json($examination, 201);
+    }
 
     /**
      * Display the specified examination.
@@ -67,7 +95,33 @@ class ExaminationController extends Controller
      * Update the specified examination.
      * PUT/PATCH /examinations/{examination}
      */
-    public function update(Request $request, Examination $examination): JsonResponse {}
+    public function update(Request $request, Examination $examination): JsonResponse
+    {
+        $validated = $request->validate([
+            'patient_id' => 'required|uuid|exists:patients,id',
+            'examination_date' => 'required|date',
+            'findings' => 'required|string',
+            'height' => 'nullable|numeric',
+            'weight' => 'nullable|numeric',
+            'systole' => 'nullable|numeric',
+            'diastole' => 'nullable|numeric',
+            'heart_rate' => 'nullable|numeric',
+            'respiration_rate' => 'nullable|numeric',
+            'temperature' => 'nullable|numeric',
+            'document' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ]);
+
+        $document = $request->file('document');
+        unset($validated['document']);
+
+        $examination = $this->examinationService->updateExamination($examination->id, $validated);
+
+        if ($document) {
+            $this->examinationService->uploadDocument($examination->id, $document);
+        }
+
+        return response()->json($examination);
+    }
 
     /**
      * Delete the specified examination.

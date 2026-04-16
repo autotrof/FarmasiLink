@@ -68,13 +68,15 @@ Route::group(['middleware' => ['auth']], function () {
     // ===== Prescription Routes =====
     Route::middleware(['role:dokter,apoteker,admin'])->group(function () {
         Route::get('/prescriptions', [PrescriptionController::class, 'index'])->name('prescriptions.index');
+        Route::get('/prescriptions/list', [PrescriptionController::class, 'list'])->name('prescriptions.list');
         Route::get('/prescriptions/{prescription}', [PrescriptionController::class, 'show'])->name('prescriptions.show');
+        Route::get('/prescriptions/{prescription}/print', [PrescriptionController::class, 'printReceipt'])->name('prescriptions.print');
     });
-    Route::middleware(['role:dokter'])->group(function () {
+    Route::middleware(['role:dokter,admin'])->group(function () {
         Route::post('/prescriptions', [PrescriptionController::class, 'store'])->name('prescriptions.store');
         Route::put('/prescriptions/{prescription}', [PrescriptionController::class, 'update'])->name('prescriptions.update');
     });
-    Route::middleware(['role:apoteker'])->group(function () {
+    Route::middleware(['role:apoteker,admin'])->group(function () {
         Route::post('/prescriptions/{prescription}/approve', [PrescriptionController::class, 'approve'])->name('prescriptions.approve');
     });
 

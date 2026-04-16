@@ -17,7 +17,7 @@ class PrescriptionService
      */
     public function getPrescriptions(int $perPage = 15, int $page = 1, array $filters = []): LengthAwarePaginator
     {
-        $query = Prescription::query();
+        $query = Prescription::with(['examination.patient', 'examination.doctor', 'items.medicine', 'servedBy']);
         if (isset($filters['patient_id']) || isset($filters['examination_id']) || isset($filters['patient_name'])) {
             $query->whereHas('examination', function ($q) use ($filters) {
                 if (isset($filters['patient_id'])) {
@@ -55,7 +55,7 @@ class PrescriptionService
      */
     public function getPrescriptionById(string $prescriptionId): Prescription
     {
-        return Prescription::with('items')->findOrFail($prescriptionId);
+        return Prescription::with('items.medicine')->findOrFail($prescriptionId);
     }
 
     /**

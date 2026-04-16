@@ -121,7 +121,14 @@ export default function Login(props: { disableCustomTheme?: boolean }) {
       setShowSuccessAlert(true);
       const timer = setTimeout(() => {
         // Redirect based on user role
-        const redirectUrl = loginData.userRole === 'dokter' ? '/examinations' : '/';
+        let redirectUrl = '/';
+        if (loginData.userRole === 'dokter') {
+          redirectUrl = '/examinations';
+        } else if (loginData.userRole === 'apoteker') {
+          redirectUrl = '/prescriptions';
+        } else if (loginData.userRole === 'resepsionis') {
+          redirectUrl = '/patients';
+        }
         router.visit(redirectUrl, {
             replace: true,
         })

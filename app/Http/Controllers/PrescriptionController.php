@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Prescription;
 use App\Services\PrescriptionService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class PrescriptionController extends Controller
 {
@@ -15,7 +18,16 @@ class PrescriptionController extends Controller
      * Display a listing of prescriptions.
      * GET /prescriptions
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): Response
+    {
+        return Inertia::render('Prescription');
+    }
+
+    /**
+     * Get paginated JSON list of prescriptions.
+     * GET /prescriptions/list
+     */
+    public function list(Request $request): JsonResponse
     {
         $request->validate([
             'per_page' => 'integer|min:1|max:100',
@@ -26,13 +38,14 @@ class PrescriptionController extends Controller
             'filters.patient_name' => 'string|max:255',
             'filters.date_from' => 'date',
             'filters.date_to' => 'date|after_or_equal:filters.date_from',
-            'filters.served_by' => 'string|exists:users,id',
+            'filters.served_by' => 'integer|exists:users,id',
             'filters.status' => 'in:pending,served',
         ]);
         $perPage = $request->input('per_page', 15);
         $page = $request->input('page', 1);
         $filters = $request->input('filters', []);
         $prescriptions = $this->prescriptionService->getPrescriptions($perPage, $page, $filters);
+
         return response()->json($prescriptions);
     }
 
@@ -51,6 +64,7 @@ class PrescriptionController extends Controller
             'items.*.instruction' => 'nullable|string|max:500',
         ]);
         $prescription = $this->prescriptionService->createPrescription($data);
+
         return response()->json($prescription, 201);
     }
 
@@ -61,6 +75,7 @@ class PrescriptionController extends Controller
     public function show(Prescription $prescription): JsonResponse
     {
         $data = $this->prescriptionService->getPrescriptionById($prescription->id);
+
         return response()->json($data);
     }
 
@@ -79,6 +94,7 @@ class PrescriptionController extends Controller
             'items.*.instruction' => 'nullable|string|max:500',
         ]);
         $updated = $this->prescriptionService->updatePrescription($prescription->id, $data);
+
         return response()->json($updated);
     }
 
@@ -88,7 +104,25 @@ class PrescriptionController extends Controller
      */
     public function approve(Request $request, Prescription $prescription): JsonResponse
     {
-        $this->prescriptionService->servePrescription($prescription->id, $request->user()->id);
+        $this->prescriptionService->servePrescription($prescription->id, ['served_by' => $request->user()->id]);
+
         return response()->json(['message' => 'Prescription approved successfully']);
+    }
+
+    /**
+     * Print receipt for the prescription.
+     * GET /prescriptions/{prescription}/print
+     */
+    public function printReceipt(Prescription $prescription)
+    {
+        $prescriptionData = $this->prescriptionService->getPrescriptionById($prescription->id);
+
+        $pdf = Pdf::loadView('pdf.receipt', ['prescription' => $prescriptionData]);
+
+        // Custom paper size for small receipt (e.g. 80mm width)
+        // 80mm is ~226.77 pt.
+        $pdf->setPaper([0, 0, 226, 600]);
+
+        return $pdf->stream("resi-resep-{$prescription->id}.pdf");
     }
 }
