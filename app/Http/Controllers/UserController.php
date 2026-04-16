@@ -7,16 +7,27 @@ use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class UserController extends Controller
 {
     public function __construct(private UserService $userService) {}
 
     /**
-     * Display a listing of users.
+     * Display users page.
      * GET /users
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): InertiaResponse
+    {
+        return Inertia::render('Users');
+    }
+
+    /**
+     * Get paginated list of users (API endpoint).
+     * GET /api/users
+     */
+    public function list(Request $request): JsonResponse
     {
         $request->validate([
             'per_page' => 'integer|min:1|max:100',
@@ -29,6 +40,7 @@ class UserController extends Controller
         $page = $request->input('page', 1);
         $filters = $request->input('filters', []);
         $users = $this->userService->getUsers($perPage, $page, $filters);
+
         return response()->json($users);
     }
 
@@ -45,6 +57,7 @@ class UserController extends Controller
             'role' => 'required|in:'.implode(',', array_column(UserRole::cases(), 'value')),
         ]);
         $user = $this->userService->createUser($data);
+
         return response()->json($user, 201);
     }
 
@@ -55,6 +68,7 @@ class UserController extends Controller
     public function show(User $user): JsonResponse
     {
         $data = $this->userService->getUserById($user->id);
+
         return response()->json($data);
     }
 
@@ -66,11 +80,12 @@ class UserController extends Controller
     {
         $data = $request->validate([
             'name' => 'sometimes|required|string|max:255',
-            'username' => 'sometimes|required|string|max:255|unique:users,username,' . $user->id,
+            'username' => 'sometimes|required|string|max:255|unique:users,username,'.$user->id,
             'password' => 'sometimes|required|string|min:8|confirmed',
             'role' => 'sometimes|required|in:'.implode(',', array_column(UserRole::cases(), 'value')),
         ]);
         $updatedUser = $this->userService->updateUser($user->id, $data);
+
         return response()->json($updatedUser);
     }
 
@@ -81,6 +96,7 @@ class UserController extends Controller
     public function destroy(User $user): JsonResponse
     {
         $this->userService->deleteUser($user->id);
+
         return response()->json(null, 204);
     }
 
@@ -91,6 +107,7 @@ class UserController extends Controller
     public function resetPassword(Request $request, User $user): JsonResponse
     {
         $newPassword = $this->userService->resetUserPassword($user->id);
+
         return response()->json(['new_password' => $newPassword]);
     }
 }

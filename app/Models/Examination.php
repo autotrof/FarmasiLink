@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 #[Fillable(['id', 'patient_id', 'doctor_id', 'examination_date', 'findings', 'document_path', 'height', 'weight', 'systole', 'diastole', 'heart_rate', 'respiration_rate', 'temperature'])]
 class Examination extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $keyType = 'string';
 

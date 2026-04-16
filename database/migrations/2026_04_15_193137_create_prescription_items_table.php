@@ -15,7 +15,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('prescription_id')->constrained('prescriptions')->onDelete('cascade');
             $table->foreignUuid('medicine_id')->constrained('medicines')->onDelete('cascade');
+            $table->foreignUuid('price_id')->constrained('prices')->onDelete('restrict');
             $table->integer('quantity');
+            $table->decimal('unit_price', 10, 2)->comment('harga satuan obat saat resep dibuat');
+            $table->decimal('subtotal', 10, 2)->comment('total harga item (quantity * unit_price)');
             $table->string('dosage')->comment('dosis pemberian obat');
             $table->string('instruction')->comment('cara pemberian');
             $table->timestamps();

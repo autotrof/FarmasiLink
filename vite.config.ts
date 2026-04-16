@@ -11,7 +11,9 @@ export default defineConfig({
             refresh: ['routes/web.php', 'resources/views/app.blade.php'],
         }),
         react(),
-        inertia(),
+        inertia({
+            ssr: false
+        }),
         tailwindcss(),
     ],
     server: {

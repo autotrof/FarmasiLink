@@ -9,7 +9,13 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon, { listItemIconClasses } from '@mui/material/ListItemIcon';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
+import AlertDialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 import MenuButton from './MenuButton';
+import { router } from '@inertiajs/react';
 
 const MenuItem = styled(MuiMenuItem)({
   margin: '2px 0',
@@ -17,12 +23,41 @@ const MenuItem = styled(MuiMenuItem)({
 
 export default function OptionsMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [openLogoutDialog, setOpenLogoutDialog] = React.useState(false);
   const open = Boolean(anchorEl);
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogoutClick = () => {
+    handleClose();
+    setOpenLogoutDialog(true);
+  };
+
+  const handleConfirmLogout = () => {
+    setOpenLogoutDialog(false);
+    fetch('/logout', {
+      method: 'POST',
+    })
+      .then(response => {
+        if (response.ok) {
+          router.visit('/login');
+        } else {
+          console.error('Logout failed');
+        }
+      })
+      .catch(error => {
+        console.error('Error during logout:', error);
+      });
+  };
+
+  const handleCancelLogout = () => {
+    setOpenLogoutDialog(false);
   };
   return (
     <React.Fragment>
@@ -53,14 +88,10 @@ export default function OptionsMenu() {
           },
         }}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
-        <Divider />
-        <MenuItem onClick={handleClose}>Add another account</MenuItem>
-        <MenuItem onClick={handleClose}>Settings</MenuItem>
+        <MenuItem onClick={handleClose}>Pengaturan</MenuItem>
         <Divider />
         <MenuItem
-          onClick={handleClose}
+          onClick={handleLogoutClick}
           sx={{
             [`& .${listItemIconClasses.root}`]: {
               ml: 'auto',
@@ -74,6 +105,22 @@ export default function OptionsMenu() {
           </ListItemIcon>
         </MenuItem>
       </Menu>
+
+      <AlertDialog
+        open={openLogoutDialog}
+        onClose={handleCancelLogout}
+      >
+        <DialogTitle>Konfirmasi Logout</DialogTitle>
+        <DialogContent>
+          Apakah Anda yakin ingin keluar dari aplikasi?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelLogout}>Batal</Button>
+          <Button onClick={handleConfirmLogout} variant="contained" color="error">
+            Logout
+          </Button>
+        </DialogActions>
+      </AlertDialog>
     </React.Fragment>
   );
 }

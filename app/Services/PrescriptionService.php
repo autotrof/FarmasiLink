@@ -2,15 +2,17 @@
 
 namespace App\Services;
 
+use App\Models\Medicine;
 use App\Models\Prescription;
+use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 
 class PrescriptionService
 {
     /**
      * Get paginated list of prescriptions.
+     *
      * @return LengthAwarePaginator<Prescription>
      */
     public function getPrescriptions(int $perPage = 15, int $page = 1, array $filters = []): LengthAwarePaginator
@@ -26,7 +28,7 @@ class PrescriptionService
                 }
                 if (isset($filters['patient_name'])) {
                     $q->whereHas('patient', function ($q) use ($filters) {
-                        $q->where('name', 'like', '%' . $filters['patient_name'] . '%');
+                        $q->where('name', 'like', '%'.$filters['patient_name'].'%');
                     });
                 }
             });
@@ -44,6 +46,7 @@ class PrescriptionService
         if (isset($filters['status'])) {
             $query->where('status', $filters['status']);
         }
+
         return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
@@ -61,12 +64,25 @@ class PrescriptionService
     public function createPrescription(array $data): Prescription
     {
         DB::beginTransaction();
+
+        // Calculate total from items and fetch current prices
+        $total = 0;
+        foreach ($data['items'] as &$itemData) {
+            $price = $this->getCurrentMedicinePrice($itemData['medicine_id']);
+            $itemData['unit_price'] = $price;
+            $total += $itemData['quantity'] * $price;
+        }
+        unset($itemData);
+
+        $data['total'] = $total;
+
         /** @var Prescription $prescription */
         $prescription = Prescription::create($data);
         foreach ($data['items'] as $itemData) {
             $prescription->items()->create($itemData);
         }
         DB::commit();
+
         return $prescription;
     }
 
@@ -80,35 +96,72 @@ class PrescriptionService
             throw new \Exception('Cannot update a served prescription');
         }
         DB::beginTransaction();
-        $prescription->update($data);
+
+        // Get medicine IDs from incoming data
+        $incomingMedicineIds = collect($data['items'])->pluck('medicine_id')->toArray();
+
+        // Delete items not in incoming data
+        $prescription->items()
+            ->whereNotIn('medicine_id', $incomingMedicineIds)
+            ->delete();
+
+        // Calculate total and prepare items with current prices
         $total = 0;
-        // delete if not exists in new data, update if exists, create if new
-        $currentItemIds = $prescription->items->pluck('id')->toArray();
-        $newItemIds = collect($data['items'])->pluck('id')->filter()->toArray();
-        $toDelete = array_diff($currentItemIds, $newItemIds);
-        $prescription->items()->whereIn('id', $toDelete)->delete();
-        // // create new items
-        // $toCreate = collect($data['items'])->filter(function ($item) {
-        //     return !isset($item['id']);
-        // });
-        // foreach ($toCreate as $itemData) {
-        //     $prescription->items()->create($itemData);
-        // }
-        // // update existing items
-        // $toUpdate = collect($data['items'])->filter(function ($item) {
-        //     return isset($item['id']);
-        // });
-        // $medicineWithCurrentPrices =
+        foreach ($data['items'] as &$itemData) {
+            $price = $this->getCurrentMedicinePrice($itemData['medicine_id']);
+            $itemData['unit_price'] = $price;
+            $total += $itemData['quantity'] * $price;
+        }
+        unset($itemData);
+
+        $data['total'] = $total;
+        $prescription->update($data);
+
+        // Update or create items
         foreach ($data['items'] as $itemData) {
             $prescription->items()->updateOrCreate(
                 ['medicine_id' => $itemData['medicine_id']],
                 $itemData
             );
-            $total += $itemData['quantity'] * $itemData['unit_price'];
         }
 
         DB::commit();
+
         return $prescription;
+    }
+
+    /**
+     * Get current price for a medicine.
+     * Returns price that is active on current date, or the latest price.
+     */
+    private function getCurrentMedicinePrice(string $medicineId): float
+    {
+        $today = Carbon::today();
+
+        // Try to find active price for today
+        $activePrice = Medicine::find($medicineId)
+            ->prices()
+            ->where(function ($query) use ($today) {
+                $query->where('start_date', '<=', $today)
+                    ->where(function ($q) use ($today) {
+                        $q->where('end_date', '>=', $today)
+                            ->orWhereNull('end_date');
+                    });
+            })
+            ->latest('start_date')
+            ->first();
+
+        if ($activePrice) {
+            return (float) $activePrice->unit_price;
+        }
+
+        // Fallback to latest price
+        $latestPrice = Medicine::find($medicineId)
+            ->prices()
+            ->latest('start_date')
+            ->first();
+
+        return (float) ($latestPrice?->unit_price ?? 0);
     }
 
     /**
@@ -125,6 +178,7 @@ class PrescriptionService
             'served_date' => now(),
             'served_by' => $data['served_by'] ?? null,
         ]);
+
         return true;
     }
 }

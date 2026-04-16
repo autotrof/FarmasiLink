@@ -38,7 +38,16 @@ class DatabaseSeeder extends Seeder
         // Create additional sample users
         User::factory(5)->create();
 
+        // Seed patients
+        $this->call(PatientSeeder::class);
+
+        // Seed examinations
+        $this->call(ExaminationSeeder::class);
+
         // fetch all medicines from api
         Artisan::call(FetchMedicines::class);
+
+        // Seed prescriptions
+        $this->call(PrescriptionSeeder::class);
     }
 }

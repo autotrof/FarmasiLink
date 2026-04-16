@@ -8,12 +8,6 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
-    defaults: {
-        prefetch: {
-            cacheFor: "1m",
-            hoverDelay: 150
-        },
-    },
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(
         `./Pages/${name}.tsx`,

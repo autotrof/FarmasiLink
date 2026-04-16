@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import SelectContent from './SelectContent';
 import MenuContent from './MenuContent';
 import OptionsMenu from './OptionsMenu';
-
+import { usePage } from '@inertiajs/react';
 const drawerWidth = 240;
 
 const Drawer = styled(MuiDrawer)({
@@ -23,6 +23,8 @@ const Drawer = styled(MuiDrawer)({
 });
 
 export default function SideMenu() {
+    const { props } = usePage();
+    const user = (props.auth as any)?.user;
   return (
     <Drawer
       variant="permanent"
@@ -65,16 +67,16 @@ export default function SideMenu() {
       >
         <Avatar
           sizes="small"
-          alt="Riley Carter"
+          alt={user?.name || 'User'}
           src="/static/images/avatar/7.jpg"
           sx={{ width: 36, height: 36 }}
         />
         <Box sx={{ mr: 'auto' }}>
           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-            Riley Carter
+            {user?.name || 'Guest'}
           </Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            riley@email.com
+            {user?.username || 'username'}
           </Typography>
         </Box>
         <OptionsMenu />

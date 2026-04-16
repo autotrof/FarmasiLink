@@ -220,8 +220,7 @@ export default function Login(props: { disableCustomTheme?: boolean }) {
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <FormLabel htmlFor="password">Password</FormLabel>
                                     <Link
-                                        component="button"
-                                        type="button"
+                                        tabIndex={-1}
                                         variant="body2"
                                         sx={{ alignSelf: 'baseline' }}
                                         onClick={(e) => {

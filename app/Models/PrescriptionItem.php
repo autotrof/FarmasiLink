@@ -3,14 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['id', 'prescription_id', 'medicine_id', 'quantity', 'dosage', 'instruction'])]
+#[Fillable(['id', 'prescription_id', 'medicine_id', 'price_id', 'quantity', 'unit_price', 'subtotal', 'dosage', 'instruction'])]
 class PrescriptionItem extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $keyType = 'string';
 
@@ -24,5 +25,10 @@ class PrescriptionItem extends Model
     public function medicine(): BelongsTo
     {
         return $this->belongsTo(Medicine::class);
+    }
+
+    public function price(): BelongsTo
+    {
+        return $this->belongsTo(Price::class);
     }
 }

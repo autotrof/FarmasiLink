@@ -3,15 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['id', 'examination_id', 'status', 'served_date'])]
+#[Fillable(['id', 'examination_id', 'status', 'served_date', 'served_by', 'total'])]
 class Prescription extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $keyType = 'string';
 
@@ -28,6 +29,7 @@ class Prescription extends Model
 
     /**
      * Get the prescription items for the prescription.
+     *
      * @return HasMany<PrescriptionItem>
      */
     public function items(): HasMany

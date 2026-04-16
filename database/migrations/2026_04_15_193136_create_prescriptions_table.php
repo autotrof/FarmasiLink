@@ -17,6 +17,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'served'])->default('pending');
             $table->dateTime('served_date')->nullable();
             $table->foreignId('served_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->decimal('total', 15, 2)->default(0)->comment('Total purchase amount from all prescription items');
             $table->timestamps();
             $table->softDeletes();
         });
