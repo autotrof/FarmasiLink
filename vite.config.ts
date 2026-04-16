@@ -8,7 +8,7 @@ export default defineConfig({
     plugins: [
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],
-            refresh: ['routes/web.php', 'resources/views/app.blade.php'],
+            refresh: false,
         }),
         react(),
         inertia({

@@ -31,7 +31,7 @@ class AuthController extends Controller
         if (Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password']])) {
             $request->session()->regenerate();
 
-            return response()->json(true);
+            return response()->json(Auth::user());
         }
 
         throw ValidationException::withMessages([

@@ -44,19 +44,23 @@ export default function SideMenu() {
         }}
       >
         {/* <SelectContent /> */}
-        <Grid container spacing={1}>
-            <Grid size={2}>
-                <img src="/logo-rs.png" alt="Logo RS" />
-            </Grid>
-            <Grid size={10}>
+        <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+            justifyContent: "flex-start",
+            alignItems: "center",
+        }}>
+            <img src="/logo-rs.png" alt="Logo RS" style={{width: 40, height: 40}} />
+            <Box>
                 <Typography variant="h6" color="text.secondary">
                     Peresepan Obat
                 </Typography>
                 <Typography color="text.secondary">
                     RS Arafah Anwar Medika
                 </Typography>
-            </Grid>
-        </Grid>
+            </Box>
+        </Stack>
       </Box>
       <Divider />
       <Box

@@ -6,16 +6,27 @@ use App\Models\Examination;
 use App\Services\ExaminationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ExaminationController extends Controller
 {
     public function __construct(private ExaminationService $examinationService) {}
 
     /**
-     * Display a listing of examinations.
+     * Display the examinations page.
      * GET /examinations
      */
-    public function index(Request $request): JsonResponse
+    public function index(): Response
+    {
+        return Inertia::render('Examinations');
+    }
+
+    /**
+     * Get paginated list of examinations.
+     * GET /examinations/list
+     */
+    public function list(Request $request): JsonResponse
     {
         $request->validate([
             'per_page' => 'nullable|integer|min:1|max:100',
@@ -24,13 +35,14 @@ class ExaminationController extends Controller
             'filters.search' => 'nullable|string',
             'filters.patient_id' => 'nullable|string',
             'filters.date_from' => 'nullable|date',
-            'filters.date_to' => 'nullable|date'
+            'filters.date_to' => 'nullable|date',
         ]);
         $examinations = $this->examinationService->getExaminations(
             perPage: $request->query('per_page', 15),
             page: $request->query('page', 1),
             filters: $request->input('filters', [])
         );
+
         return response()->json($examinations);
     }
 
@@ -38,10 +50,7 @@ class ExaminationController extends Controller
      * Store a newly created examination.
      * POST /examinations
      */
-    public function store(Request $request): JsonResponse
-    {
-
-    }
+    public function store(Request $request): JsonResponse {}
 
     /**
      * Display the specified examination.
@@ -50,6 +59,7 @@ class ExaminationController extends Controller
     public function show(Examination $examination): JsonResponse
     {
         $data = $this->examinationService->getExaminationById($examination->id);
+
         return response()->json($data);
     }
 
@@ -57,9 +67,7 @@ class ExaminationController extends Controller
      * Update the specified examination.
      * PUT/PATCH /examinations/{examination}
      */
-    public function update(Request $request, Examination $examination): JsonResponse
-    {
-    }
+    public function update(Request $request, Examination $examination): JsonResponse {}
 
     /**
      * Delete the specified examination.
@@ -68,6 +76,7 @@ class ExaminationController extends Controller
     public function destroy(Examination $examination): JsonResponse
     {
         $this->examinationService->deleteExamination($examination->id);
+
         return response()->json(null, 204);
     }
 
@@ -82,6 +91,7 @@ class ExaminationController extends Controller
         ]);
 
         $path = $this->examinationService->uploadDocument($examination->id, $request->file('document'));
+
         return response()->json(['message' => 'Document uploaded successfully', 'path' => $path], 201);
     }
 }

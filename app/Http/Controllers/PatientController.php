@@ -6,21 +6,33 @@ use App\Models\Patient;
 use App\Services\PatientService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class PatientController extends Controller
 {
     public function __construct(private PatientService $patientService) {}
 
     /**
-     * Display a listing of patients.
+     * Display the patients page.
      * GET /patients
      */
-    public function index(Request $request): JsonResponse
+    public function index(): Response
+    {
+        return Inertia::render('Patient');
+    }
+
+    /**
+     * Get paginated list of patients.
+     * GET /patients/list
+     */
+    public function list(Request $request): JsonResponse
     {
         $perPage = $request->query('per_page', 15);
         $page = $request->query('page', 1);
         $filters = $request->only(['name', 'patient_number']);
         $patients = $this->patientService->getPatients($perPage, $page, $filters);
+
         return response()->json($patients);
     }
 
@@ -31,7 +43,6 @@ class PatientController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'patient_number' => 'required|string|unique:patients,patient_number',
             'name' => 'required|string',
             'date_of_birth' => 'required|date',
             'gender' => 'required|in:male,female',
@@ -41,6 +52,7 @@ class PatientController extends Controller
         ]);
 
         $patient = $this->patientService->createPatient($data);
+
         return response()->json($patient, 201);
     }
 
@@ -51,6 +63,7 @@ class PatientController extends Controller
     public function show(Patient $patient): JsonResponse
     {
         $data = $this->patientService->getPatientById($patient->id);
+
         return response()->json($data);
     }
 
@@ -61,7 +74,7 @@ class PatientController extends Controller
     public function update(Request $request, Patient $patient): JsonResponse
     {
         $data = $request->validate([
-            'patient_number' => 'sometimes|required|string|unique:patients,patient_number,' . $patient->id,
+            'patient_number' => 'sometimes|required|string|unique:patients,patient_number,'.$patient->id,
             'name' => 'sometimes|required|string',
             'date_of_birth' => 'sometimes|required|date',
             'gender' => 'sometimes|required|in:male,female',
@@ -71,6 +84,7 @@ class PatientController extends Controller
         ]);
 
         $updated = $this->patientService->updatePatient($patient->id, $data);
+
         return response()->json($updated);
     }
 
@@ -81,6 +95,7 @@ class PatientController extends Controller
     public function destroy(Patient $patient): JsonResponse
     {
         $this->patientService->deletePatient($patient->id);
+
         return response()->json(null, 204);
     }
 }

@@ -8,7 +8,6 @@ import {
   HomeTwoTone,
   MedicationLiquidTwoTone,
   PersonTwoTone,
-  ReceiptTwoTone,
   MedicalInformationTwoTone,
   AssignmentTwoTone,
   HistoryTwoTone,

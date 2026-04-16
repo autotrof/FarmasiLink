@@ -23,7 +23,6 @@ interface ProfileData {
   id: number;
   name: string;
   username: string;
-  email: string;
   role: string;
 }
 
@@ -132,14 +131,6 @@ export default function Profile({ profile }: ProfilePageProps) {
               <TextField
                 label="Username"
                 value={profile?.username || ''}
-                fullWidth
-                disabled
-                variant="outlined"
-              />
-              <TextField
-                label="Email"
-                type="email"
-                value={profile?.email || ''}
                 fullWidth
                 disabled
                 variant="outlined"

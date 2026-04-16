@@ -30,6 +30,7 @@ Route::group(['middleware' => ['auth']], function () {
     // ===== Patient Routes =====
     Route::middleware(['role:resepsionis,admin,dokter'])->group(function () {
         Route::get('/patients', [PatientController::class, 'index'])->name('patients.index');
+        Route::get('/patients/list', [PatientController::class, 'list'])->name('patients.list');
         Route::get('/patients/{patient}', [PatientController::class, 'show'])->name('patients.show');
     });
     Route::middleware(['role:resepsionis,admin'])->group(function () {
@@ -43,6 +44,7 @@ Route::group(['middleware' => ['auth']], function () {
     // ===== Examination Routes =====
     Route::middleware(['role:dokter,admin'])->group(function () {
         Route::get('/examinations', [ExaminationController::class, 'index'])->name('examinations.index');
+        Route::get('/examinations/list', [ExaminationController::class, 'list'])->name('examinations.list');
         Route::get('/examinations/{examination}', [ExaminationController::class, 'show'])->name('examinations.show');
         Route::post('/examinations', [ExaminationController::class, 'store'])->name('examinations.store');
         Route::put('/examinations/{examination}', [ExaminationController::class, 'update'])->name('examinations.update');
@@ -85,6 +87,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     // ===== Profile Routes (All Authenticated) =====
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('/profile/me', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
 
     // ===== Log Routes =====

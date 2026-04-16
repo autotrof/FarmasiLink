@@ -20,8 +20,28 @@ class ProfileController extends Controller
     public function index(): InertiaResponse
     {
         $profile = $this->profileService->getAuthenticatedUser();
+
         return Inertia::render('Profile', [
             'profile' => [
+                'id' => $profile->id,
+                'name' => $profile->name,
+                'username' => $profile->username,
+                'email' => $profile->email,
+                'role' => $profile->role,
+            ],
+        ]);
+    }
+
+    /**
+     * Get authenticated user as JSON.
+     * GET /profile/me
+     */
+    public function show(): JsonResponse
+    {
+        $profile = $this->profileService->getAuthenticatedUser();
+
+        return response()->json([
+            'user' => [
                 'id' => $profile->id,
                 'name' => $profile->name,
                 'username' => $profile->username,
@@ -42,7 +62,7 @@ class ProfileController extends Controller
             'new_password' => 'required|string|min:8|confirmed',
         ]);
 
-        if (!$this->profileService->changePassword(Auth::id(), $data['current_password'], $data['new_password'])) {
+        if (! $this->profileService->changePassword(Auth::id(), $data['current_password'], $data['new_password'])) {
             return response()->json(
                 ['message' => 'Password saat ini tidak sesuai'],
                 422

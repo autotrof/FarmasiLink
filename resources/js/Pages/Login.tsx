@@ -22,6 +22,7 @@ type LoginData = {
     };
     message?: string;
     success?: boolean;
+    userRole?: string;
 };
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -76,10 +77,12 @@ async function doLogin(_prevState: unknown, formData: FormData) : Promise<LoginD
         });
 
         if (response.ok) {
+            const userData = await response.json();
             return {
                 fields: validatedFields.data,
                 message: 'Login berhasil',
                 success: true,
+                userRole: userData.role,
             };
         }
 
@@ -117,7 +120,9 @@ export default function Login(props: { disableCustomTheme?: boolean }) {
     if (loginData?.success) {
       setShowSuccessAlert(true);
       const timer = setTimeout(() => {
-        router.visit('/', {
+        // Redirect based on user role
+        const redirectUrl = loginData.userRole === 'dokter' ? '/examinations' : '/';
+        router.visit(redirectUrl, {
             replace: true,
         })
       }, 500);

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Patient;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Str;
 
 class PatientService
 {
@@ -14,12 +15,13 @@ class PatientService
     {
         $query = Patient::query();
         if (isset($filters['name'])) {
-            $query->where('name', 'like', '%' . $filters['name'] . '%');
+            $query->where('name', 'like', '%'.$filters['name'].'%');
         }
         if (isset($filters['patient_number'])) {
-            $query->where('patient_number', 'like', '%' . $filters['patient_number'] . '%');
+            $query->where('patient_number', 'like', '%'.$filters['patient_number'].'%');
         }
-        return $query->paginate($perPage, ['*'], 'page', $page);
+
+        return $query->orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**
@@ -35,6 +37,15 @@ class PatientService
      */
     public function createPatient(array $data): Patient
     {
+        if (empty($data['patient_number'])) {
+            do {
+                $number = 'PAT-'.str_pad((string) mt_rand(1, 999999), 6, '0', STR_PAD_LEFT);
+            } while (Patient::where('patient_number', $number)->exists());
+
+            $data['patient_number'] = $number;
+        }
+        $data['id'] = Str::uuid();
+
         return Patient::create($data);
     }
 
@@ -45,6 +56,7 @@ class PatientService
     {
         $patient = Patient::findOrFail($patientId);
         $patient->update($data);
+
         return $patient;
     }
 
@@ -54,6 +66,7 @@ class PatientService
     public function deletePatient(string $patientId): bool
     {
         $patient = Patient::findOrFail($patientId);
+
         return $patient->delete();
     }
 }
