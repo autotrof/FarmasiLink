@@ -16,9 +16,10 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->string('name');
             $table->string('password');
-            $table->enum('role', ['admin', 'dokter', 'apoteker'])->default('apoteker');
+            $table->enum('role', ['admin', 'resepsionis', 'dokter', 'apoteker'])->default('apoteker');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('sessions', function (Blueprint $table) {

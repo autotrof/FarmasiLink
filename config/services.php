@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'medicine' => [
+        'email' => env('MEDICINE_API_EMAIL', 'upload.kurniawan@gmail.com'),
+        'password' => env('MEDICINE_API_PASSWORD', '085812168079'),
+    ],
+
 ];

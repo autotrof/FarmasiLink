@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Console\Commands\FetchMedicines;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -35,5 +37,8 @@ class DatabaseSeeder extends Seeder
 
         // Create additional sample users
         User::factory(5)->create();
+
+        // fetch all medicines from api
+        Artisan::call(FetchMedicines::class);
     }
 }

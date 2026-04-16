@@ -1,0 +1,83 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Examination;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+class ExaminationService
+{
+    /**
+     * Get paginated list of examinations.
+     */
+    public function getExaminations(int $perPage = 15, int $page = 1, array $filters = []): LengthAwarePaginator
+    {
+        $query = Examination::query();
+        if (isset($filters['patient_id'])) {
+            $query->where('patient_id', $filters['patient_id']);
+        }
+        if (isset($filters['date_from'])) {
+            $query->whereDate('examination_date', '>=', $filters['date_from']);
+        }
+        if (isset($filters['date_to'])) {
+            $query->whereDate('examination_date', '<=', $filters['date_to']);
+        }
+        if (isset($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+        if (isset($filters['search'])) {
+            $query->where('findings', 'like', '%' . $filters['search'] . '%');
+        }
+        if (isset($filters['doctor_id'])) {
+            $query->where('doctor_id', $filters['doctor_id']);
+        }
+        return $query->paginate($perPage, ['*'], 'page', $page);
+    }
+
+    /**
+     * Get examination by ID with vital signs and prescription.
+     */
+    public function getExaminationById(string $examinationId): Examination
+    {
+        return Examination::findOrFail($examinationId);
+    }
+
+    /**
+     * Create a new examination with vital signs.
+     */
+    public function createExamination(array $data): Examination
+    {
+        return Examination::create($data);
+    }
+
+    /**
+     * Update existing examination.
+     */
+    public function updateExamination(string $examinationId, array $data): Examination
+    {
+        $examination = Examination::findOrFail($examinationId);
+        $examination->update($data);
+        return $examination;
+    }
+
+    /**
+     * Delete examination.
+     */
+    public function deleteExamination(string $examinationId): bool
+    {
+        $examination = Examination::findOrFail($examinationId);
+        return $examination->delete();
+    }
+
+    /**
+     * Upload medical document for examination.
+     */
+    public function uploadDocument(int $examinationId, $file): string
+    {
+        $examination = Examination::findOrFail($examinationId);
+        $path = $file->store('examination_documents/' . $examinationId);
+        $examination->document_path = $path;
+        $examination->save();
+        return $path;
+    }
+}

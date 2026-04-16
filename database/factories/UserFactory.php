@@ -65,6 +65,16 @@ class UserFactory extends Factory
     }
 
     /**
+     * Create a resepsionis user.
+     */
+    public function resepsionis(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => UserRole::Resepsionis,
+        ]);
+    }
+
+    /**
      * Create an apoteker user.
      */
     public function apoteker(): static
