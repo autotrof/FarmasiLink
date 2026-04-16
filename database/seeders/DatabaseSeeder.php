@@ -35,6 +35,12 @@ class DatabaseSeeder extends Seeder
             'name' => 'Apt. Siti',
         ]);
 
+        // Create sample apoteker
+        User::factory()->resepsionis()->create([
+            'username' => 'resepsionis',
+            'name' => 'Resepsionis',
+        ]);
+
         // Create additional sample users
         User::factory(5)->create();
 
